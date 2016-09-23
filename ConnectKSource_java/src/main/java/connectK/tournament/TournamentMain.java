@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class TournamentMain {
 			if (!extractedAis.exists()) {
 				// TODO: re extract and overwrite all AIs
 			}
-
+			
 			playerList = new ArrayList<>();
 			// Populate list with player factories
 			loadPlayers(extractedAis);

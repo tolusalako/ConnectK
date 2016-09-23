@@ -36,7 +36,7 @@ public class Tournament {
 	// Holds the results of our game along with a boolean thats true if we've
 	// used the result;
 	Queue<Future<TournamentGroup>> resultGroups;
-	final int MAX_THREADS = 10;
+	final int MAX_THREADS = 100;
 	List<TournamentPlayer> playerList;
 	final int playerCount;
 

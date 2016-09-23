@@ -7,6 +7,7 @@
 package connectK.tournament;
 
 import java.rmi.UnexpectedException;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -76,7 +77,7 @@ class TournamentMatch implements Callable<TournamentGroup> {
 			try {
 				if (p1 != null && p2 != null){
 					game = new TournamentGame(p1, p2);
-					winner = game.start();
+					winner = game.start(1);
 				}else if (p1 == null)
 					winner = 2;
 				else
@@ -135,6 +136,8 @@ class TournamentMatch implements Callable<TournamentGroup> {
 		TournamentPlayer p2;
 		 final String playersPlaying;
 //		final ExecutorService gameExecutors; 
+			int p1score = 0;
+			int p2score = 0;
 
 		public TournamentGame(TournamentPlayer p1, TournamentPlayer p2) {
 			this.p1 = p1;
@@ -143,13 +146,12 @@ class TournamentMatch implements Callable<TournamentGroup> {
 					+ String.format("Players: [%s vs %s];", p1.getName(), p2.getName());
 //			gameExecutors = Executors.newFixedThreadPool(3);
 		}
+		
 
-		public Integer start() throws Exception {
+		public Integer start(int round) throws Exception {
 			// Play p1 vs p2 (n * 2 times, with each player going 1st) and
 			// return
 			// winner id;
-			int p1score = 0;
-			int p2score = 0;
 			LOG.debug("Now playing: " + playersPlaying);
 			int h, w, k;
 			boolean g;
@@ -166,7 +168,7 @@ class TournamentMatch implements Callable<TournamentGroup> {
 				CKPlayer player1 = p1.getPlayerFactory().getPlayer((byte) 1, model);
 				CKPlayer player2 = p2.getPlayerFactory().getPlayer((byte) 2, model);
 
-//				gameExecutors.submit(task)
+//				gameExecutors.submit(task) //TODO use executors
 				ConnectK game = new ConnectK(model, player1, player2); // New
 																		// NoGui
 
@@ -181,8 +183,9 @@ class TournamentMatch implements Callable<TournamentGroup> {
 					p2score++;
 					LOG.info("Game Ended: {}. Winner: {}",playersPlaying, p2.getName());
 				}else{
-					LOG.info("Game Ended: (). DRAW!", playersPlaying);
+					LOG.info("Game Ended: {}. DRAW!", playersPlaying);
 				}
+				LOG.info("Round: {} | Score P1: {}, P2: {}", round, p1score, p2score);
 
 				// TODO: this can be more efficient. What about ending the match
 				// if there is a significant lead. I.e 2/3
@@ -196,9 +199,10 @@ class TournamentMatch implements Callable<TournamentGroup> {
 			else if (p2score > p1score)
 				return 2;
 			else {
-				// TODO: What to do if game draw?
-				//Play again
-				return start();
+//				if (config > 2)
+					return new Random().nextInt((2 - 1) + 1) + 1;
+//				else
+//					return start(round++);
 			}
 		}
 
