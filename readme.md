@@ -64,11 +64,3 @@ Python users:
 	Write your ai in the make_move() method in dummyai.py.
 	Then start with the following command:
 		java -jar ConnectK.jar py:dummyai.py
-
-
-Tournament:
-You can also test your AI in a tournament fashion against other versions.
-java -jar tournament.jar AI1.class cpp:AI2 AI3.class
-
-If the AI is written in C++, prefix it with "cpp:".   You can watch the games happen. After all the games are played (n^2 - n games), the scores will be printed for each player (higher is better).
-A sample batch file (for windows users) and shell file (linux and mac users) that runs tournament is provided for you. 
