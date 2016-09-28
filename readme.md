@@ -14,7 +14,8 @@ Playing Connect K with ConnectK.jar:
 	Additionally, you can choose to import AI opponents. 3 AI opponents are provided for you. Click Add AI and navigate to ~/AverageAI/AverageAI.class located in the folder containing this README. Click open, and new game to start a game against the average AI. 
 
 ###Writing an AI:
-####Preparation: 
+####JAVA users:
+#####Preparation: 
 	The following instructions will tell you how to begin writing an AI with eclipse. 
 	
 	Create a new java project.
@@ -27,7 +28,7 @@ Playing Connect K with ConnectK.jar:
 	
 	Now you can begin formulating your own AI. 
 
-####The template:
+#####The template:
 	 An overloaded method and a constructor are provided. 
 	 
 	 The constructor will be called with a player (1 or 2) and a blank BoardModel containing the dimensions (width, height) and rules (gravity, and k) for the game. 
