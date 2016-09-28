@@ -2,7 +2,7 @@
 
 This readme provides instructions and tips that may aid you in the programming of your ConnectK AI
 
-Running ConnectK.jar:
+###Running ConnectK.jar:
 	You can run it using the commandline/terminal with the command java -jar ConnectK.jar from the directory the file is in.
 	Alternatively, you can simply doubleclick the jar to run it.
 	
@@ -13,8 +13,8 @@ Playing Connect K with ConnectK.jar:
 	
 	Additionally, you can choose to import AI opponents. 3 AI opponents are provided for you. Click Add AI and navigate to ~/AverageAI/AverageAI.class located in the folder containing this README. Click open, and new game to start a game against the average AI. 
 
-Writing an AI:
-Preparation: 
+###Writing an AI:
+####Preparation: 
 	The following instructions will tell you how to begin writing an AI with eclipse. 
 	
 	Create a new java project.
@@ -27,7 +27,7 @@ Preparation:
 	
 	Now you can begin formulating your own AI. 
 
-The template:
+####The template:
 	 An overloaded method and a constructor are provided. 
 	 
 	 The constructor will be called with a player (1 or 2) and a blank BoardModel containing the dimensions (width, height) and rules (gravity, and k) for the game. 
@@ -48,8 +48,8 @@ BoardModel:
 	
 	Although most of the member variables are public, it is recommended to use the getters (e.g. getSpace(int x, int y) instead of directly accessing 'pieces[x][y]'. 
 
-C++ users:
-	Please get C++ code from http://www.ics.uci.edu/~rickl/courses/AI-projects/connect-k/CS171ConnectKStudentResources/cPlusPlusSource/. ConnectK.cpp has main function to get a current state from the java shell. Please implement your AI agent in AIShell::makeMove(). AIShell::gameState has the current game state as array of integers. 0, 1 and -1 represent empty, AI piece and human piece respectively. Note that these integer values are different from the Java version.
+####C++ users:
+	ConnectK.cpp has main function to get a current state from the java shell. Please implement your AI agent in AIShell::makeMove(). AIShell::gameState has the current game state as array of integers. 0, 1 and -1 represent empty, AI piece and human piece respectively. Note that these integer values are different from the Java version.
 
 	Then compile your code and make an executable file (for example on Windows, myAI.exe). On Linux, open a terminal and type
 			g++ ConnectK.cpp Move.cpp AIShell.cpp -o myAI
@@ -59,7 +59,7 @@ C++ users:
 		   java -jar ConnectK.jar cpp:myAI.exe
 	On Linux:
 		   java -jar ConnectK.jar cpp:myAI
-Python users:
+####Python users:
 	Python has it's own standalone shell located in ConnectKSource_python. The shell only supports python AIs at the moment. To run your python AIs in the java shell:
 	Write your ai in the make_move() method in dummyai.py.
 	Then start with the following command:
