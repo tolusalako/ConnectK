@@ -1,5 +1,5 @@
-*.jar
-*.exe
+./*.jar
+./*.exe
 *.pyc
 AssignmentSubmission
 
