@@ -26,24 +26,24 @@ After starting up ConnectK, the game will default to a two player (human vs. hum
 
 >You can change the settings of the game by selecting File->New from the drop down menu on the upper left. The width, height, K, and gravity of the board can be modified by changing the values in the 4 boxes labeled width, height, K, and gravity. 
 	
-Additionally, you can choose to import AI opponents. 3 AI opponents are provided for you in the `SampleAI` directory. Click Add AI and navigate to 'ConnectKSource_Java/SampleAI/AverageAI/AverageAI.class'. Click open, and new game to start a game against the average AI. 
+Additionally, you can choose to import AI opponents. 3 AI opponents are provided for you in the `SampleAI` directory. Click Add AI and navigate to 'ConnectKSource_java/SampleAI/AverageAI/AverageAI.class'. Click open, and new game to start a game against the average AI. 
 
 >You can add multiple AIs and watch 2 of them play against eachother.
 
 ###3. Writing an AI:
 ####JAVA users:
 #####Preparation: 
-	The following instructions will tell you how to begin writing an AI with eclipse. 
-	
-	Create a new java project.
-	
-	Put dummyAI.java in the default package for the new project. This file will act as starter code to help write your own AI. Make sure you rename the file to something else. 
+The following instructions will tell you how to begin writing an AI with eclipse. 
 
-	Add ConnectK.jar to the build path of the project. You can do this by right clicking the project, scrolling to "build path" and click "add external archives". Locate your ConnectK.jar file and click open. 
-	
-	*Note the source of ConnectK.jar is provided for you as a convenience. Do NOT include it in your java project. 
-	
-	Now you can begin formulating your own AI. 
+1. Copy `ConnectK.jar` to `ConnectKSource_java/Libs`
+2. Open eclipse and create a new java project.
+3. Right click on the project in `Project Explorer` and click on `properties`.
+4. Go to `Java Build Path` > `Libraries` > `Add External Jars`.
+5. Select all the JAR files in the `Libs` folder and import them.
+6. Put `DummyAI.java` in the default package for the new project. This file will act as starter code to help write your own AI. Make sure you rename the file to `<YOUR TEAM NAME>AI.java`. 
+Now you can begin formulating your own AI. 
+>Note the source of ConnectK.jar is provided for you as a convenience. Do NOT include it in your java project. 
+
 
 #####The template:
 	 An overloaded method and a constructor are provided. 
