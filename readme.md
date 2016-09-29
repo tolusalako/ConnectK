@@ -1,19 +1,36 @@
 #ConnectK
 
-This readme provides instructions and tips that may aid you in the programming of your ConnectK AI
+##Project Description
+ConnectK is an enhanced version of Connect4 [the board game](https://en.wikipedia.org/wiki/Connect_Four). ConnectK's width (**w**), height (**h**), and **K** are all configurable. ConnectK is also more interesting as it supports 2 different gravity modes: **ON | OFF**. With gravity off, the pieces stay wherever they are placed. With gravity on, they fall till they meet another piece or hit the bottom. The purpose of the project is for students to write AIs to compete in a tournament against other students.
 
-###Running ConnectK.jar:
-	You can run it using the commandline/terminal with the command java -jar ConnectK.jar from the directory the file is in.
-	Alternatively, you can simply doubleclick the jar to run it.
+###Language Support
+
+| Language | Shell (Supported AIs)  | AI    |
+|----------|:-------------------------------|:-----:|
+| Java 8     | **STABLE** (java, cpp, python) |  **YES**  |
+| CPP      | NONE   |  **YES**  |
+| Python 3   | *BUGGY* (python)  |  **YES**  |
+
+This means that you can __**write**__ your AIs in Java, Cpp, or Python, and you can __**run**__ any AI written in any of the 3 languages on the Java shell.
+
+##Getting Started
+###1. Running ConnectK.jar:
+You can run it from the directory the file is in using the commandline/terminal with the command:
+```shell
+java -jar ConnectK.jar
+```
+Alternatively, you can simply doubleclick the jar to run it.
 	
-Playing Connect K with ConnectK.jar:
-	After starting up ConnectK, the game will default to a two player (human vs. human) game of connect 5.
+###2. Playing Connect K with ConnectK.jar:
+After starting up ConnectK, the game will default to a two player (human vs. human) game of connect 5.
 
-	You can change the settings of the game by selecting File->New from the drop down menu on the upper left. The width, height, K, and gravity of the board can be modified by changing the values in the 4 boxes labeled width, height, K, and gravity. 
+>You can change the settings of the game by selecting File->New from the drop down menu on the upper left. The width, height, K, and gravity of the board can be modified by changing the values in the 4 boxes labeled width, height, K, and gravity. 
 	
-	Additionally, you can choose to import AI opponents. 3 AI opponents are provided for you. Click Add AI and navigate to ~/AverageAI/AverageAI.class located in the folder containing this README. Click open, and new game to start a game against the average AI. 
+Additionally, you can choose to import AI opponents. 3 AI opponents are provided for you in the `SampleAI` directory. Click Add AI and navigate to 'ConnectKSource_Java/SampleAI/AverageAI/AverageAI.class'. Click open, and new game to start a game against the average AI. 
 
-###Writing an AI:
+>You can add multiple AIs and watch 2 of them play against eachother.
+
+###3. Writing an AI:
 ####JAVA users:
 #####Preparation: 
 	The following instructions will tell you how to begin writing an AI with eclipse. 
