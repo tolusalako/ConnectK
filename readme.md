@@ -41,6 +41,7 @@ The following instructions will tell you how to begin writing an AI with eclipse
 4. Go to `Java Build Path` > `Libraries` > `Add External Jars`.
 5. Select all the JAR files in the `Libs` folder and import them.
 6. Put `DummyAI.java` in the default package for the new project. This file will act as starter code to help write your own AI. Make sure you rename the file to `<YOUR TEAM NAME>AI.java`. 
+
 Now you can begin formulating your own AI. 
 >Note the source of ConnectK.jar is provided for you as a convenience. Do NOT include it in your java project. 
 
