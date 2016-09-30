@@ -18,7 +18,7 @@ On open lab, you can switch compiler versions using:
 #For Java 8
 module load java/1.8.0_20
 #For Python 3
-module load python/3.5.2
+module load python/3.5.1
 ```
 
 ##Getting Started
