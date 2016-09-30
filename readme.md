@@ -56,43 +56,52 @@ Now you can begin formulating your own AI.
 
 
 ######The template:
-	 An overloaded method and a constructor are provided. 
+ An overloaded method and a constructor are provided. 
 	 
-	 The constructor will be called with a player (1 or 2) and a blank BoardModel containing the dimensions (width, height) and rules (gravity, and k) for the game. 
+ The constructor will be called with a player (1 or 2) and a blank BoardModel containing the dimensions (width, height) and rules (gravity, and k) for the game. 
 	 
-	 The method getMove will be called with an updated gamestate (i.e. blank if it is a new game, has a piece for each move that has been played since) and should return a move in the form of a java.awt.Point(). 
+ The method getMove will be called with an updated gamestate (i.e. blank if it is a new game, has a piece for each move that has been played since) and should return a move in the form of a java.awt.Point(). 
 	 
-	 GetMove can also be called with an additional parameter: deadline. deadline represents the amount of time in milliseconds that you have to return a move. 
+ GetMove can also be called with an additional parameter: deadline. deadline represents the amount of time in milliseconds that you have to return a move. 
 
-BoardModel: 
-	BoardModel contains the rules, dimensions, and pieces in the game. 
+#######BoardModel: 
+BoardModel contains the rules, dimensions, and pieces in the game. 
 	
-	The pieces are stored in a 2D array of bytes with the indices [x][y] representing column and row, respectively. The lower left corner is represented by (0,0) while the upper left, upper right, and bottom right corners in a R by C gameboard are represented by (0, R-1), (C-1, R-1), (C-1,0) respectively. Each slot in the array contains either a 0,1,2 which represent that the space is empty, occupied by player 1, or occupied by player 2, respectively. Note that these integer values are different from the C++ version.
+The pieces are stored in a 2D array of bytes with the indices [x][y] representing column and row, respectively. The lower left corner is represented by (0,0) while the upper left, upper right, and bottom right corners in a R by C gameboard are represented by (0, R-1), (C-1, R-1), (C-1,0) respectively. Each slot in the array contains either a 0,1,2 which represent that the space is empty, occupied by player 1, or occupied by player 2, respectively. Note that these integer values are different from the C++ version.
 	
 	
-	There are getters available for the rules and dimensions as well as getters for the last move placed i.e. getLastMove()
+There are getters available for the rules and dimensions as well as getters for the last move placed i.e. getLastMove()
 	
 	There are also many convenience methods available such as toString() which outputs a string representation of the game board. Please refer to BoardModel.java in the file "ConnectKSource.zip".	
 	
-	Although most of the member variables are public, it is recommended to use the getters (e.g. getSpace(int x, int y) instead of directly accessing 'pieces[x][y]'. 
+Although most of the member variables are public, it is recommended to use the getters (e.g. getSpace(int x, int y) instead of directly accessing 'pieces[x][y]'. 
 
 #####C++ AIs:
 	ConnectK.cpp has main function to get a current state from the java shell. Please implement your AI agent in AIShell::makeMove(). AIShell::gameState has the current game state as array of integers. 0, 1 and -1 represent empty, AI piece and human piece respectively. Note that these integer values are different from the Java version.
 
-	Then compile your code and make an executable file (for example on Windows, myAI.exe). On Linux, open a terminal and type
-			g++ ConnectK.cpp Move.cpp AIShell.cpp -o myAI
+Then compile your code and make an executable file (for example on Windows, myAI.exe). On Linux, open a terminal and type
+```shell
+g++ ConnectK.cpp Move.cpp AIShell.cpp -o myAI
+```
 
-	Then you can test your AI agent by running ConnectK.jar with the following command.
-	On Windows:
-		   java -jar ConnectK.jar cpp:myAI.exe
-	On Linux:
-		   java -jar ConnectK.jar cpp:myAI
+Then you can test your AI agent by running ConnectK.jar with the following command.
+On Windows:
+```
+java -jar ConnectK.jar cpp:myAI.exe
+```
+On Linux:
+```
+java -jar ConnectK.jar cpp:myAI
+```
+
 #####Python AIs:
-	Python has it's own standalone shell located in ConnectKSource_python. The shell only supports python AIs at the moment. To run your python AIs in the java shell:
-	Write your ai in the make_move() method in dummyai.py.
-	Then start with the following command:
-		java -jar ConnectK.jar py:dummyai.py
-		
+Python has it's own standalone shell located in [ConnectKSource_python](https://github.com/tolusalako/ConnectK/blob/FQ2016_STABLE/ConnectKSource_python/). The shell only supports python AIs at the moment. To run your python AIs in the java shell:
+
+1. Write your ai in the make_move() method in 'student_ai.py'.
+2. Then start with the following command:
+```
+java -jar ConnectK.jar py:dummyai.py
+```
 		
 ###B. Python Shell
 See [Python Readme](https://github.com/tolusalako/ConnectK/blob/FQ2016_STABLE/ConnectKSource_python/readme.md)
