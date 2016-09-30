@@ -6,7 +6,7 @@ You will need to set up Putty and [Xming](https://sourceforge.net/projects/xming
 
 1) Log on to openlab.ics.uci.edu with X11 forwarding enabled.
 2) Make sure you are in the python source directory
-3) Load the python/3.5.1 module -> "module load python/3.5.1". The default python version does not have the necessary libraries to run ConnectK. Loading version 3.5.1 also loads additional libraries.
+3) Load the python/3.5.1 module using `module load python/3.5.1`. The default python version does not have the necessary libraries to run ConnectK. Loading version 3.5.1 also loads additional libraries.
 4) Start a game: 
 ```
 #Default gui vs gui game
