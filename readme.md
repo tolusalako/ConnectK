@@ -92,3 +92,7 @@ BoardModel:
 	Write your ai in the make_move() method in dummyai.py.
 	Then start with the following command:
 		java -jar ConnectK.jar py:dummyai.py
+		
+		
+###B. Python Shell
+See [Python Readme](https://github.com/tolusalako/ConnectK/blob/FQ2016_STABLE/ConnectKSource_python/readme.md)
