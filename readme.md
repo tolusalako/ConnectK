@@ -13,6 +13,14 @@ ConnectK is an enhanced version of Connect4 [the board game](https://en.wikipedi
 
 This means that you can __**write**__ your AIs in Java, Cpp, or Python, and you can __**run**__ any AI written in any of the 3 languages on the Java shell.
 
+On open lab, you can switch compiler versions using:
+```shell
+#For Java 8
+module load java/1.8.0_20
+#For Python 3
+module load python/3.5.2
+```
+
 ##Getting Started
 ###1. Running ConnectK.jar:
 You can run it from the directory the file is in using the commandline/terminal with the command:
