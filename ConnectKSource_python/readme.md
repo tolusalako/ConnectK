@@ -2,7 +2,7 @@
 
 This file explains how to run connect k (python) on openlab
 
-You will need to set up Putty and Xming (for gui). Instructions can be found [here] (http://laptops.eng.uci.edu/instructional-computing/incoming-students/using-linux/how-to-configure-xming-putty).
+You will need to set up Putty and Xming (for gui). Instructions can be found [here] (http://laptops.eng.uci.edu/software-installation/using-linux/how-to-configure-xming-putty).
 
 1) Log on to openlab.ics.uci.edu with X11 forwarding enabled.
 -X11 let's us interact with the graphical user interface while logged on to openlab.
