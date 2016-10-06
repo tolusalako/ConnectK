@@ -97,12 +97,10 @@ java -jar ConnectK.jar cpp:myAI
 #####Python AIs:
 Python has it's own standalone shell located in [ConnectKSource_python](https://github.com/tolusalako/ConnectK/blob/FQ2016_STABLE/ConnectKSource_python/). The shell only supports python AIs at the moment. To run your python AIs in the java shell:
 
-1. Write your ai in the make_move() method in 'student_ai.py'.
-2. Make sure `ConnectK.jar`, `pyshell.py`, and `student_ai.py` are all in the same directory.
-3. Run with the following command 
+1. Write your ai in the make_move() method in 'StudentAI.py'.
+2. Run with the following command 
 ```
-#Note: we are calling pyshell not student_ai.
-java -jar ConnectK.jar py:pyshell.py
+java -jar ConnectK.jar py:StudentAI.py
 ```
 		
 ###B. Python Shell
