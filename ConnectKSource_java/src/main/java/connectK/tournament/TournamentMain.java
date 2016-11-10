@@ -5,59 +5,76 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
+import connectK.BoardModel;
 import connectK.CKPlayerFactory;
+import connectK.tournament.TournamentMatch.TournamentGame;
+import connectK.utils.LogUtils;
 
 public class TournamentMain {
 	private static Logger LOG = LoggerFactory.getLogger(TournamentMain.class);
 
-	private static String ZIPPED_AI_DIR = "AssignmentSubmission";
-	private final static String EXTRACTED_AI_DIR = "extracted_ais";
-	private final static String TEST_AIS[] = {"GoodAI", "AverageAI", "PoorAI"}; 
-	private final static String TEST_AI_DIR = "../ConnectKSource_java";
+	private static String EXTRACTED_AI_DIR = "AssignmentSubmission";
+	private final static String TEST_AIS[] = { "GoodAI", "AverageAI", "PoorAI" };
+	private final static String TEST_AI_DIR = "../ConnectKSource_java/SampleAI";
 	private static List<TournamentPlayer> playerList;
+	private static List<String> loadedPlayers;
 
 	public static void main(String[] args) {
 
 		if (args.length < 1)
-			System.out.println("Assignment Submission Arg not found. Assuming default location");
+			System.out.println("No arg found. Assuming default location ["+EXTRACTED_AI_DIR+"]");
 		else
-			ZIPPED_AI_DIR = args[0];
+			EXTRACTED_AI_DIR = args[0];
 
-		File zippedAis = new File(ZIPPED_AI_DIR);
-		File extractedAis = Paths.get(ZIPPED_AI_DIR, EXTRACTED_AI_DIR).toFile();
+		File extractedAis = new File(EXTRACTED_AI_DIR);
 		try {
-			if (!zippedAis.exists())
-				throw new FileNotFoundException(ZIPPED_AI_DIR + " was not found in working directory.");
+			if (!extractedAis.exists())
+				throw new FileNotFoundException(EXTRACTED_AI_DIR + " was not found.");
 
-			if (!extractedAis.exists()) {
-				// TODO: re extract and overwrite all AIs
-			}
-			
 			playerList = new ArrayList<>();
+			loadedPlayers = new ArrayList<>();
+			
 			// Populate list with player factories
 			loadPlayers(extractedAis);
 			// Include GOOD and AVG ais
-			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[0]).toFile());
-			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[1]).toFile());
-			
-			// Make sure player list is even, if it's not, balance it with poor AI
-			if (playerList.size() % 2 != 0){
-				LOG.info("Found uneven player list. Balancing it with test AI: {}", TEST_AIS[2]);
-				loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[2]).toFile());
-			}
-			
-			System.out.println("Successfully loaded " + playerList.size() + " AIs.");
-			if (!(playerList.size() > 0))
+//			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[0]).toFile());
+//			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[1]).toFile());
+		
+
+			// Make sure player list is even, if it's not, balance it with poor
+			// AI
+//			if (playerList.size() % 2 != 0) {
+//				LOG.info("Found uneven player list. Balancing it with test AI: {}", TEST_AIS[2]);
+//				loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[2]).toFile());
+//			}
+
+			LOG.info("Successfully loaded " + playerList.size() + " AIs.");
+			if (playerList.isEmpty())
 				exit(0);
+			
+			vsPoorAI(playerList);
+			exit(0);
+
+			// testPlayers(playerList);
 
 			// Load players into tournament
-			Tournament tournament = new Tournament(playerList);//.subList(0, 4));
+			Tournament tournament = new Tournament(playerList);
 			// Start the tournament!
 			tournament.begin();
 			exit(0);
@@ -66,7 +83,6 @@ public class TournamentMain {
 			exit(1);
 		}
 
-		
 	}
 
 	private static void loadPlayers(File pathname) {
@@ -80,8 +96,9 @@ public class TournamentMain {
 			TournamentPlayer player = getPlayer(f.getName(), f.getAbsolutePath());
 			if (null != player) {
 				playerList.add(player);
-				System.out.println("Successfully loaded: " + f.getName());
-			}else{
+				LOG.info("Successfully loaded {}", player.getName());
+				LogUtils.logAI(LOG, Level.INFO, player.getName(), "Successfully loaded " + player.getName(), null);
+			} else {
 				LOG.error("Could not load file: {}", f.getName());
 			}
 		}
@@ -91,21 +108,82 @@ public class TournamentMain {
 	private static TournamentPlayer getPlayer(String name, String path) {
 		CKPlayerFactory factory;
 		String prefix = "";
-		if (name.endsWith(CKPlayerFactory.cppPostfix))
-			prefix = CKPlayerFactory.cppPrefix;
-		else if (name.endsWith(CKPlayerFactory.javaPostfix) && !name.equals("AverageAI.class"))
-		    prefix = "";
-		else if (name.endsWith(CKPlayerFactory.pythonPostfix))
+		String playerName = name;
+		if (name.endsWith("AI." + CKPlayerFactory.javaPostfix) && !name.equals("AverageAI.class")){
+			// JAVA AIs
+			prefix = "";
+			playerName = name.substring(0, name.indexOf('.'));
+		}else if (name.endsWith("AI." + CKPlayerFactory.pythonPostfix) && !name.startsWith(".")){
+			// Python AIs
 			prefix = CKPlayerFactory.pythonPrefix;
+			playerName = name.substring(0, name.indexOf('.'));
+		}else if (name.endsWith("AI." + CKPlayerFactory.cppPostfixWindows) || name.endsWith("AI")){
+				prefix = CKPlayerFactory.cppPrefix;
+				playerName = (name.endsWith("AI")) ? playerName : name.substring(0, name.indexOf('.'));
+		}else if (name.startsWith(".")){
+			LOG.error("Could not load AI: {}", playerName);
+			return null;
+		}else // Invalid files
+			return null;
 		try {
 			factory = new CKPlayerFactory(prefix + path);
+			if (loadedPlayers.contains(playerName))
+			{
+				LOG.error("Skipping duplicate AI {}", playerName);
+				return null;
+			}else
+			{
+				LogUtils.logAI(LOG, Level.DEBUG, playerName, "Loading player " + playerName, null);
+				loadedPlayers.add(playerName);
+			}
 			return new TournamentPlayer(factory, playerList.size());
 		} catch (IllegalArgumentException | NoClassDefFoundError | ClassFormatError e) {
-			LOG.error("Could not load AI: {}", name, e);
+			LOG.error("Could not load AI: {}", playerName);
+			LogUtils.logAI(LOG, Level.ERROR, playerName, "Could not load AI", e);
 		}
 		return null;
 	}
 
+	private static void vsPoorAI(List<TournamentPlayer> players) {
+		File poorAIFile = Paths.get(TEST_AI_DIR, TEST_AIS[2], TEST_AIS[2] + ".class").toFile();
+		TournamentPlayer poorAI = getPlayer(poorAIFile.getName(), poorAIFile.getAbsolutePath());
+		if (poorAI == null)
+			return;
+		
+		LOG.info("Playing {} AIs against poorAI", players.size());
+		ExecutorService executors = Executors.newFixedThreadPool(50);
+		Iterator<TournamentPlayer> playerIter = players.iterator();
+		Queue<Future<TournamentMatch>> futures = new ConcurrentLinkedQueue<Future<TournamentMatch>>();
+		while (playerIter.hasNext()){
+			Future f = executors.submit(() -> {
+				TournamentPlayer player = playerIter.next();
+				try {
+					
+					TournamentGame game =  new TournamentGame(player, poorAI);
+					return game.start(1);
+				} catch (Exception e) {
+					LOG.error("Player {} Crash", player.getName());
+				} //vs PoorAI
+				return 2; //PoorAI wins
+			});
+			futures.add(f);
+		}
+		while (!isDone(futures)) {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				LOG.error("Could not sleep thread", e);
+			}
+		}
+		LOG.debug("Games complete");
+		exit(0);
+	}
+
+	private static boolean isDone(Queue<Future<TournamentMatch>> futures) {
+		Predicate<Future<TournamentMatch>> notDone = f -> f.isDone() == false;
+		return futures.stream().noneMatch(notDone);
+	}
+	
 	private static void exit(int code) {
 		System.exit(code);
 	}

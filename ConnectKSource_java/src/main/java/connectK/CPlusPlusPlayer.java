@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  *
  * @author Thomas Bennett
  */
-public class CPlusPlusPlayer extends GUIPlayer {
+public class CPlusPlusPlayer extends CKPlayer {
 
     private static final String madeMove="ReturningTheMoveMade";
     private static final int AI_MOVE=1;
@@ -51,6 +51,7 @@ public class CPlusPlusPlayer extends GUIPlayer {
     public CPlusPlusPlayer(byte player, BoardModel state, String command){
         super(player, state);
         this.processStartCommand=command;
+        this.teamName = new File(command).getName().split("\\.")[0];
     }
 
 

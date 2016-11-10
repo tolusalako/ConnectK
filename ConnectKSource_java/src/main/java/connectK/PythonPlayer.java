@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * @author Thomas Bennett
  * Modified for python by: Toluwanimi Salako
  */
-public class PythonPlayer extends GUIPlayer { //TODO: extend cppPlayer
+public class PythonPlayer extends CKPlayer { //TODO: extend cppPlayer
 
     private static final String madeMove="ReturningTheMoveMade";
     private static final int AI_MOVE=1;

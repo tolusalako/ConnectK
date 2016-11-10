@@ -1,9 +1,3 @@
-/** Copyright (c) 2016 SalakoTech.
- * This file and all of its contents belong to SalakoTech and should not be shared.
- * Created on: Jul 2, 2016
- * @author Toluwanimi Salako
- * Last edited: Jul 2, 2016
- */
 package connectK.tournament;
 
 import java.util.Comparator;
@@ -94,9 +88,9 @@ class TournamentPlayer implements Comparator<TournamentPlayer> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + groupId;
+//		result = prime * result + groupId;
 		result = prime * result + ((player == null) ? 0 : player.hashCode());
-		result = prime * result + rank;
+//		result = prime * result + rank;
 		return result;
 	}
 

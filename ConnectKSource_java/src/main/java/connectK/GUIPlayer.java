@@ -13,7 +13,7 @@ import javax.swing.JButton;
  * @author ateam
  *
  */
-public class GUIPlayer extends CKPlayer implements ActionListener{
+public final class GUIPlayer extends CKPlayer implements ActionListener{
 	Point lastMove;
 	
 	protected GUIPlayer(byte player, BoardModel state){

@@ -1,9 +1,3 @@
-/** Copyright (c) 2016 SalakoTech.
- * This file and all of its contents belong to SalakoTech and should not be shared.
- * Created on: Jul 2, 2016
- * @author Toluwanimi Salako
- * Last edited: Jul 2, 2016
- */
 package connectK.tournament;
 
 import java.rmi.UnexpectedException;
@@ -15,10 +9,12 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import connectK.BoardModel;
 import connectK.CKPlayer;
 import connectK.ConnectK;
+import connectK.utils.LogUtils;
 
 class TournamentMatch implements Callable<TournamentGroup> {
 	Logger LOG = LoggerFactory.getLogger(TournamentMatch.class);
@@ -59,7 +55,6 @@ class TournamentMatch implements Callable<TournamentGroup> {
 		TournamentPlayer p2 = groupB.poll();
 		TournamentGame game;
 		while (!groupA.isEmpty() || !groupB.isEmpty() || null != p1 || null != p2) {
-			LOG.info("[1] {} {} {} {}", groupA.toArray(), groupB.toArray(), p1, p2);
 			// If any of the players equal null, add the last player to the
 			// end
 			// of list;
@@ -72,8 +67,6 @@ class TournamentMatch implements Callable<TournamentGroup> {
 			// After first game, loser plays next player from opposing
 			// group.
 			int winner, oldGroupId;
-
-			LOG.info("[2] {} {} {} {}", groupA.toArray(), groupB.toArray(), p1, p2);
 			try {
 				if (p1 != null && p2 != null){
 					game = new TournamentGame(p1, p2);
@@ -83,8 +76,6 @@ class TournamentMatch implements Callable<TournamentGroup> {
 				else
 					winner = 1;
 				
-
-				LOG.info("[3] {} {} {} {} | Winner: {}", groupA.toArray(), groupB.toArray(), p1, p2, winner);
 				if (winner == 1) {
 					// Set player 1 as winner, and match player 2 against
 					// next
@@ -131,7 +122,8 @@ class TournamentMatch implements Callable<TournamentGroup> {
 		return "\n[TournamentMatch] \n\tgroupA=" + groupA + ", \n\tgroupB=" + groupB;
 	}
 
-	private class TournamentGame {
+	public static class TournamentGame {
+		static Logger LOG = LoggerFactory.getLogger(TournamentGame.class);
 		TournamentPlayer p1;
 		TournamentPlayer p2;
 		 final String playersPlaying;
@@ -152,7 +144,6 @@ class TournamentMatch implements Callable<TournamentGroup> {
 			// Play p1 vs p2 (n * 2 times, with each player going 1st) and
 			// return
 			// winner id;
-			LOG.debug("Now playing: " + playersPlaying);
 			int h, w, k;
 			boolean g;
 			BoardConfig config[] = TournamentProperties.getBoardConfig();
@@ -162,31 +153,33 @@ class TournamentMatch implements Callable<TournamentGroup> {
 				w = config[i].getWidth();
 				k = config[i].getK();
 				g = config[i].getGravity();
-				LOG.debug(playersPlaying + String.format("Game %s. H: %s, W: %s, K: %s, G: %s", i, h, w, k, g));
+				LogUtils.logAIs(LOG, Level.INFO, playersPlaying + String.format("Game %s. H: %s, W: %s, K: %s, G: %s", i, h, w, k, g), null, p1.getName(), p2.getName());
 
 				BoardModel model = new BoardModel(w, h, k, g);
 				CKPlayer player1 = p1.getPlayerFactory().getPlayer((byte) 1, model);
 				CKPlayer player2 = p2.getPlayerFactory().getPlayer((byte) 2, model);
 
+				LogUtils.logAIs(LOG, Level.INFO, String.format("Player 1: %s, Player 2: %s", p1.getName(), p2.getName()), null, p1.getName(), p2.getName());
+
 //				gameExecutors.submit(task) //TODO use executors
 				ConnectK game = new ConnectK(model, player1, player2); // New
 																		// NoGui
-
 				byte winner = game.play();
 
 				// Assign scores based on winner
 				if (winner == 1){
 					p1score++;
-					LOG.info("Game Ended: {}. Winner: {}",playersPlaying, p1.getName());
+					LogUtils.logAIs(LOG, Level.INFO, String.format("Game Ended. Winner: %s.",	p1.getName()), null, p1.getName(), p2.getName());
 				}
 				else if (winner == 2){
 					p2score++;
-					LOG.info("Game Ended: {}. Winner: {}",playersPlaying, p2.getName());
+					LogUtils.logAIs(LOG, Level.INFO, String.format("Game Ended. Winner: %s.",	p2.getName()), null, p1.getName(), p2.getName());
 				}else{
-					LOG.info("Game Ended: {}. DRAW!", playersPlaying);
+					LogUtils.logAIs(LOG, Level.INFO, "Game Ended. DRAW!", null, p1.getName(), p2.getName());
 				}
 				LOG.info("Round: {} | Score P1: {}, P2: {}", round, p1score, p2score);
-
+				LogUtils.logAIs(LOG, Level.INFO, String.format("Round: %s | Score P1: %s, P2: %s", round, p1score, p2score), null, p1.getName(), p2.getName());
+				
 				// TODO: this can be more efficient. What about ending the match
 				// if there is a significant lead. I.e 2/3
 			}

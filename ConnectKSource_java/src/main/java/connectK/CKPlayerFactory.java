@@ -7,7 +7,7 @@ import java.net.URLClassLoader;
 
 public class CKPlayerFactory {
 	public static final String cppPrefix = "cpp:";
-	public static final String cppPostfix = "exe";
+	public static final String cppPostfixWindows = "exe";
 	public static final String pythonPrefix = "py:";
 	public static final String pythonPostfix = "py";
 	public static final String javaPostfix = "class";
