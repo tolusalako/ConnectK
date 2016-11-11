@@ -134,8 +134,7 @@ class TournamentMatch implements Callable<TournamentGroup> {
 		public TournamentGame(TournamentPlayer p1, TournamentPlayer p2) {
 			this.p1 = p1;
 			this.p2 = p2;
-			playersPlaying = String.format("Group: [%s vs %s] ", p1.getGroupId(), p2.getGroupId())
-					+ String.format("Players: [%s vs %s];", p1.getName(), p2.getName());
+			playersPlaying = String.format("Group: [%s vs %s] Players: [%s vs %s];", p1.getGroupId(), p2.getGroupId(), p1.getName(), p2.getName());
 //			gameExecutors = Executors.newFixedThreadPool(3);
 		}
 		
@@ -169,12 +168,15 @@ class TournamentMatch implements Callable<TournamentGroup> {
 				// Assign scores based on winner
 				if (winner == 1){
 					p1score++;
+					LOG.info("Game Ended [{}]. Winner: " + p1.getName(), playersPlaying);
 					LogUtils.logAIs(LOG, Level.INFO, String.format("Game Ended. Winner: %s.",	p1.getName()), null, p1.getName(), p2.getName());
 				}
 				else if (winner == 2){
 					p2score++;
+					LOG.info("Game Ended [{}]. Winner: " + p2.getName(), playersPlaying);
 					LogUtils.logAIs(LOG, Level.INFO, String.format("Game Ended. Winner: %s.",	p2.getName()), null, p1.getName(), p2.getName());
 				}else{
+					LOG.info("Game Ended [{}]. Draw!", playersPlaying);
 					LogUtils.logAIs(LOG, Level.INFO, "Game Ended. DRAW!", null, p1.getName(), p2.getName());
 				}
 				LOG.info("Round: {} | Score P1: {}, P2: {}", round, p1score, p2score);

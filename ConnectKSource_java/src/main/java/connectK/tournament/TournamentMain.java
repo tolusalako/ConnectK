@@ -133,12 +133,13 @@ public class TournamentMain {
 				return null;
 			}else
 			{
+				LOG.debug("Loading player {}", playerName);
 				LogUtils.logAI(LOG, Level.DEBUG, playerName, "Loading player " + playerName, null);
 				loadedPlayers.add(playerName);
 			}
 			return new TournamentPlayer(factory, playerList.size());
 		} catch (IllegalArgumentException | NoClassDefFoundError | ClassFormatError e) {
-			LOG.error("Could not load AI: {}", playerName);
+			LOG.error("Could not load AI", playerName, e);
 			LogUtils.logAI(LOG, Level.ERROR, playerName, "Could not load AI", e);
 		}
 		return null;
@@ -147,22 +148,29 @@ public class TournamentMain {
 	private static void vsPoorAI(List<TournamentPlayer> players) {
 		File poorAIFile = Paths.get(TEST_AI_DIR, TEST_AIS[2], TEST_AIS[2] + ".class").toFile();
 		TournamentPlayer poorAI = getPlayer(poorAIFile.getName(), poorAIFile.getAbsolutePath());
-		if (poorAI == null)
-			return;
-		
+		if (poorAI == null){
+			for (TournamentPlayer player : players)
+				if (player.getName().equals("PoorAI")){
+					poorAI = player;
+					break;
+				}			
+			players.remove(poorAI);
+		}
 		LOG.info("Playing {} AIs against poorAI", players.size());
-		ExecutorService executors = Executors.newFixedThreadPool(50);
+		ExecutorService executors = Executors.newFixedThreadPool(200);
 		Iterator<TournamentPlayer> playerIter = players.iterator();
 		Queue<Future<TournamentMatch>> futures = new ConcurrentLinkedQueue<Future<TournamentMatch>>();
 		while (playerIter.hasNext()){
+			final TournamentPlayer poorAICopy = poorAI;
 			Future f = executors.submit(() -> {
 				TournamentPlayer player = playerIter.next();
 				try {
 					
-					TournamentGame game =  new TournamentGame(player, poorAI);
+					TournamentGame game =  new TournamentGame(player, poorAICopy);
 					return game.start(1);
 				} catch (Exception e) {
-					LOG.error("Player {} Crash", player.getName());
+					LOG.error("Player {} Crash", player.getName(), e);
+					LogUtils.logAI(LOG, Level.ERROR, player.getName(), String.format("Player %s Crash", player.getName()), e);
 				} //vs PoorAI
 				return 2; //PoorAI wins
 			});
