@@ -3,7 +3,6 @@
 *.pyc
 *log
 AssignmentSubmission
-*.class
 
 
 .metadata

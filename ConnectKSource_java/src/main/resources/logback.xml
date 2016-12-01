@@ -40,13 +40,16 @@
         </sift>
     </appender>
 
-    <!-- <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-            </Pattern>
+             <encoder>
+
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+                </Pattern>
+             </encoder>
         </layout>
-    </appender> -->
+    </appender>
 
     <appender name="FILE-TOURNAMENT"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -106,7 +109,7 @@
         <appender-ref ref="FILE-THREAD" />
 		<appender-ref ref="FILE-ERROR" />
 	</logger>
-
+    
     <logger name="connectK" level="debug"
         additivity="false">
         <appender-ref ref="FILE-AUDIT" />

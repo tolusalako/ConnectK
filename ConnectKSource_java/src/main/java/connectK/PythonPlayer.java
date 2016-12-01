@@ -133,7 +133,7 @@ public class PythonPlayer extends CKPlayer { //TODO: extend cppPlayer
                 }
             }
         }
-        System.out.println("outputting: "+aiCount+" ai pieces "+huCount+" human pieces "+eCount+" empty pieces");
+        System.out.println("outputting: "+aiCount+" ai pieces "+huCount+" human pieces "+eCount+" empty pieces, and "+deadline+" time limit");
 
         return command;
     }

@@ -15,7 +15,7 @@ public class ConnectK {
 	private ConnectKGUI view;
 	private BoardModel currentBoard;
 	private CKPlayer[] players = new CKPlayer[3];
-	private final static int TIMEOUT = 5000; //5s
+	private final static int TIMEOUT = 6000; //6s
 
 	public ConnectK(BoardModel model, CKPlayer player1, CKPlayer player2) {
 		currentBoard = model;
@@ -32,7 +32,7 @@ public class ConnectK {
 		byte currentPlayer = 1;
 		while (currentBoard.winner() == -1) {
 			long begin = System.currentTimeMillis();
-			log(currentPlayer, " says:", false);
+			log(currentPlayer, " says:", Level.INFO);
 			java.awt.Point p;
 			begin = System.currentTimeMillis();
 			PlayerThread pf = new PlayerThread(players[currentPlayer], (BoardModel) currentBoard.clone(), TIMEOUT);
@@ -48,14 +48,13 @@ public class ConnectK {
 			p = pf.move;
 			if (p == null || currentBoard.getSpace(p) != 0) {
 				log(currentPlayer, " returned a bad move " + p + " or went over time ("
-						+ (System.currentTimeMillis() - begin) + ").", true);
-				return currentPlayer == (byte) 1 ? (byte) 2 : (byte) 1;// Forfeit,
-																		// other
-																		// player
-																		// wins
+						+ (System.currentTimeMillis() - begin) + ").", Level.ERROR);
+				byte winner =  currentPlayer == (byte) 1 ? (byte) 2 : (byte) 1; // Forfeit
+				log(winner, " (" + players[winner].teamName + ")" + " wins!", Level.INFO);
+				return winner;													
 			}
 			currentBoard = currentBoard.placePiece(p, currentPlayer);
-			log(currentPlayer, " returns move " + p.x + ", " + p.y + ".", false);
+			log(currentPlayer, " returns move " + p.x + ", " + p.y + ".", Level.INFO);
 			if (view != null)
 				view.placePiece(currentBoard.lastMove, currentPlayer);
 			currentPlayer = (byte) (currentPlayer == 1 ? 2 : 1);
@@ -66,7 +65,7 @@ public class ConnectK {
 				view.setStatus("Player " + winner + " (" + players[winner].teamName + ")" + " wins");
 				view.highlightSpaces(currentBoard.winningSpaces(), view.playerColors[winner]);
 			}
-			log(winner, " (" + players[winner].teamName + ")" + " wins!", false);
+			log(winner, " (" + players[winner].teamName + ")" + " wins!", Level.INFO);
 		} else {
 			if (!currentBoard.hasMovesLeft()) {
 				LOG.info("DRAW!");
@@ -91,12 +90,13 @@ public class ConnectK {
 		return currentBoard.height;
 	}
 
-	public void log(byte player, String message, boolean isError){
+	public void log(byte player, String message, Level logLevel){
 		String toLog = String.format("Player %s [%s] %s", player, players[player].teamName, message);
-		if (isError)
-			LogUtils.logAIs(LOG, Level.ERROR, toLog, null, players[1].teamName, players[2].teamName);
+		LogUtils.logAIs(LOG, logLevel, toLog, null, players[1].teamName, players[2].teamName);
+		if (logLevel == Level.ERROR)
+			System.err.println(toLog);
 		else
-			LogUtils.logAIs(LOG, Level.INFO, toLog, null, players[1].teamName, players[2].teamName);
+			System.out.println(toLog);
 	}
 	
 }
@@ -116,7 +116,7 @@ class PlayerThread extends Thread {
 
 	public void run() {
 		try {
-			move = player.getMove(model, 5000);
+			move = player.getMove(model, deadline);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

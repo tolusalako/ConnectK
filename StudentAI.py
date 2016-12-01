@@ -21,7 +21,7 @@ class StudentAI():
             for j in range(height):
                 spaces[(i,j)] = self.model.get_space(i, j)
         print(self.model.spaces_left)
-
+        print(deadline)
         moves = [k for k in spaces.keys() if spaces[k] == 0]
         return moves[random.randint(0, len(moves) - 1)]
 
@@ -44,6 +44,7 @@ def make_ai_shell_from_input():
     '''
     global is_first_player
     global model
+    global deadline
     ai_shell = None
     begin =  "makeMoveWithState:"
     end = "end"
@@ -81,7 +82,7 @@ def make_ai_shell_from_input():
             #allocate 2D array.
             model = boardmodel.BoardModel(col_count, row_count, k, gravity)
             count_own_moves = 0
-
+            
             for col in range(col_count):
                 for row in range(row_count):
                     model.pieces[col][row] = int(mass_input[counter])
@@ -120,6 +121,7 @@ if __name__ == '__main__':
     '''
     DO NOT MODIFY THIS
     '''
+    global deadline
     print ("Make sure this program is ran by the Java shell. It is incomplete on its own. :")
     go = True
     while (go): #do this forever until the make_ai_shell_from_input function ends the process or it is killed by the java wrapper.
