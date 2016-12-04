@@ -273,18 +273,31 @@ public class ConnectKGUI extends JFrame {
 
 	public static void main(String[] args) throws NoGuiException {
 		boolean makeGui = true;
-		BoardModel model = BoardModel.defaultBoard();
 		CKPlayer player1 = null;
 		CKPlayer player2 = null;
+		boolean gravity = BoardModel.DEFAULT_GRAVITY;
+		int height = BoardModel.DEFAULT_HEIGHT;
+		int width = BoardModel.DEFAULT_WIDTH;
+		int k = BoardModel.DEFAULT_K;
+		int timeout = ConnectK.DEFAULT_TIMEOUT;
+		int buffer = ConnectK.DEFAULT_BUFFER;
 
 		// Handle Args
 		for (String arg : args) {
 			if (arg.equals("-nogui"))
 				makeGui = false;
-			// else if(arg.startsWith("-g:")
-			// else if(arg.startsWith("-w:")
-			// else if(arg.startsWith("-h:")
-			// else if(arg.startsWith("-k:")
+			 else if(arg.startsWith("-g:"))
+					 gravity = arg.endsWith("1") ? true : false;
+			 else if(arg.startsWith("-w:"))
+				 width = Integer.valueOf(arg.substring(3));
+			 else if(arg.startsWith("-h:"))
+				 height = Integer.valueOf(arg.substring(3));
+			 else if(arg.startsWith("-k:"))
+				 k = Integer.valueOf(arg.substring(3));
+			 else if(arg.startsWith("-t:"))
+				 timeout = Integer.valueOf(arg.substring(3));
+			 else if(arg.startsWith("-b:"))
+				 buffer = Integer.valueOf(arg.substring(3));
 			else {
 				try {
 					loadedAIs.add(new CKPlayerFactory(arg));
@@ -295,6 +308,8 @@ public class ConnectKGUI extends JFrame {
 				}
 			}
 		}
+		BoardModel model = new BoardModel(width, height, k, gravity);
+		
 
 		if (makeGui) {
 			try {
@@ -327,17 +342,21 @@ public class ConnectKGUI extends JFrame {
 			player2 = new GUIPlayer((byte) 2, model);
 		}
 		System.out.println("player1, " + player1);
+		
 		if (makeGui) {
 			ConnectKGUI gui = new ConnectKGUI(model);
 			if (player1 instanceof GUIPlayer)
 				gui.addButtonListener((GUIPlayer) player1);
 			if (player2 instanceof GUIPlayer)
 				gui.addButtonListener((GUIPlayer) player2);
-			(new ConnectK(model, player1, player2, gui)).play();
+			ConnectK game = new ConnectK(model, player1, player2, gui);
+			game.setTimeout(timeout, buffer);
+			game.play();
 		} else {
 			try {
 				// For tournaments
 				ConnectK tournament = new ConnectK(model, player1, player2, null);
+				tournament.setTimeout(timeout, buffer);
 				byte winner = tournament.play();
 				System.out.println("Winner is: " + winner);
 				System.exit(0);

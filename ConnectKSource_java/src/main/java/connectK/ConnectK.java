@@ -15,12 +15,17 @@ public class ConnectK {
 	private ConnectKGUI view;
 	private BoardModel currentBoard;
 	private CKPlayer[] players = new CKPlayer[3];
-	private final static int TIMEOUT = 6000; //6s
+	public static final int DEFAULT_TIMEOUT = 5000;
+	public static final int DEFAULT_BUFFER = 1000;
+	private int timeout;
+	private int buffer;
 
 	public ConnectK(BoardModel model, CKPlayer player1, CKPlayer player2) {
 		currentBoard = model;
 		players[1] = player1;
 		players[2] = player2;
+		timeout = DEFAULT_TIMEOUT;
+		buffer = DEFAULT_BUFFER;
 	}
 
 	public ConnectK(BoardModel model, CKPlayer player1, CKPlayer player2, ConnectKGUI view) {
@@ -35,13 +40,13 @@ public class ConnectK {
 			log(currentPlayer, " says:", Level.INFO);
 			java.awt.Point p;
 			begin = System.currentTimeMillis();
-			PlayerThread pf = new PlayerThread(players[currentPlayer], (BoardModel) currentBoard.clone(), TIMEOUT);
+			PlayerThread pf = new PlayerThread(players[currentPlayer], (BoardModel) currentBoard.clone(), timeout);
 			pf.start();
 			try {
 				if (players[currentPlayer] instanceof GUIPlayer)
 					pf.join();
 				else
-					pf.join(TIMEOUT);
+					pf.join(timeout + buffer);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -88,6 +93,15 @@ public class ConnectK {
 
 	public int height() {
 		return currentBoard.height;
+	}
+	
+	public void setTimeout(int timeout){
+		this.timeout = timeout;
+	}
+	
+	public void setTimeout(int timeout, int buffer){
+		setTimeout(timeout);
+		this.buffer = buffer;
 	}
 
 	public void log(byte player, String message, Level logLevel){
