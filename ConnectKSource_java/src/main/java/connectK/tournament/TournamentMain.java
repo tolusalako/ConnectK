@@ -4,14 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.Random;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import connectK.BoardModel;
 import connectK.CKPlayerFactory;
 import connectK.tournament.TournamentMatch.TournamentGame;
 import connectK.utils.LogUtils;
@@ -52,17 +52,16 @@ public class TournamentMain {
 			
 			// Populate list with player factories
 			loadPlayers(extractedAis);
-			// Include GOOD and AVG ais
-//			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[0]).toFile());
-//			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[1]).toFile());
+//			 Include GOOD and AVG ais
+			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[0]).toFile());
+			loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[1]).toFile());
 		
 
-			// Make sure player list is even, if it's not, balance it with poor
-			// AI
-//			if (playerList.size() % 2 != 0) {
-//				LOG.info("Found uneven player list. Balancing it with test AI: {}", TEST_AIS[2]);
-//				loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[2]).toFile());
-//			}
+			// Make sure player list is even, if it's not, balance it with poorAI
+			if (playerList.size() % 2 != 0) {
+				LOG.info("Found uneven player list. Balancing it with test AI: {}", TEST_AIS[2]);
+				loadPlayers(Paths.get(TEST_AI_DIR, TEST_AIS[2]).toFile());
+			}
 
 			LOG.info("Successfully loaded " + playerList.size() + " AIs.");
 			if (playerList.isEmpty())
@@ -125,11 +124,12 @@ public class TournamentMain {
 			return null;
 		}else // Invalid files
 			return null;
+		
 		try {
 			factory = new CKPlayerFactory(prefix + path);
 			if (loadedPlayers.contains(playerName))
 			{
-				LOG.error("Skipping duplicate AI {}", playerName);
+				LOG.error("Skipping duplicate AI {} in {}", playerName, path);
 				return null;
 			}else
 			{
@@ -160,14 +160,16 @@ public class TournamentMain {
 		ExecutorService executors = Executors.newFixedThreadPool(200);
 		Iterator<TournamentPlayer> playerIter = players.iterator();
 		Queue<Future<TournamentMatch>> futures = new ConcurrentLinkedQueue<Future<TournamentMatch>>();
+		Map<String, Integer> vsPoor = new ConcurrentSkipListMap<String, Integer>();
 		while (playerIter.hasNext()){
 			final TournamentPlayer poorAICopy = poorAI;
 			Future f = executors.submit(() -> {
 				TournamentPlayer player = playerIter.next();
 				try {
-					
 					TournamentGame game =  new TournamentGame(player, poorAICopy);
-					return game.start(1);
+					int result = game.start(1);
+					vsPoor.put(player.getName(), result == 1? 1 : 0);
+					return result;
 				} catch (Exception e) {
 					LOG.error("Player {} Crash", player.getName(), e);
 					LogUtils.logAI(LOG, Level.ERROR, player.getName(), String.format("Player %s Crash", player.getName()), e);
@@ -184,6 +186,10 @@ public class TournamentMain {
 			}
 		}
 		LOG.debug("Games complete");
+		System.out.println("Results vs PoorAI\nAI\tWon");
+		for (Entry<String, Integer> entry : vsPoor.entrySet()){
+			System.out.println(entry.getKey() + "\t" + entry.getValue());
+		}
 		exit(0);
 	}
 

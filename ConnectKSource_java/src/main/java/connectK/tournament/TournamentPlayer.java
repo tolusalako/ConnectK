@@ -8,6 +8,7 @@ class TournamentPlayer implements Comparator<TournamentPlayer> {
 	private int rank;
 	private int groupId;
 	private CKPlayerFactory player;
+	public int score = 0;
 
 	/**
 	 * Create a new tournament player with rank 0;

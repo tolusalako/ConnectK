@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
     <property name="LOG_HOME" value="logs" />
 
@@ -103,16 +104,20 @@
 
     </appender>
 
+    <logger name="ch.qos.logback" level="error"
+        additivity="false">
+		<appender-ref ref="STDOUT" />
+    </logger>
+
     <logger name="connectK.tournament" level="debug"
 		additivity="false">
 		<appender-ref ref="FILE-TOURNAMENT" />
         <appender-ref ref="FILE-THREAD" />
 		<appender-ref ref="FILE-ERROR" />
 	</logger>
-    
+
     <logger name="connectK" level="debug"
         additivity="false">
-        <appender-ref ref="FILE-AUDIT" />
         <appender-ref ref="FILE-THREAD" />
         <appender-ref ref="FILE-ERROR" />
     </logger>

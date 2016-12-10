@@ -13,6 +13,7 @@ import org.slf4j.event.Level;
 
 import connectK.BoardModel;
 import connectK.CKPlayer;
+import connectK.CKPlayerFactory;
 import connectK.ConnectK;
 import connectK.utils.LogUtils;
 
@@ -126,16 +127,14 @@ class TournamentMatch implements Callable<TournamentGroup> {
 		static Logger LOG = LoggerFactory.getLogger(TournamentGame.class);
 		TournamentPlayer p1;
 		TournamentPlayer p2;
-		 final String playersPlaying;
-//		final ExecutorService gameExecutors; 
-			int p1score = 0;
-			int p2score = 0;
+		final String playersPlaying;
+//		CKPlayerFactory originalp1;
 
 		public TournamentGame(TournamentPlayer p1, TournamentPlayer p2) {
 			this.p1 = p1;
 			this.p2 = p2;
+//			originalp1 = p1.getPlayerFactory();
 			playersPlaying = String.format("Group: [%s vs %s] Players: [%s vs %s];", p1.getGroupId(), p2.getGroupId(), p1.getName(), p2.getName());
-//			gameExecutors = Executors.newFixedThreadPool(3);
 		}
 		
 
@@ -146,7 +145,6 @@ class TournamentMatch implements Callable<TournamentGroup> {
 			int h, w, k;
 			boolean g;
 			BoardConfig config[] = TournamentProperties.getBoardConfig();
-			// TODO: Spawn different threads to play each game?
 			for (int i = 0; i < config.length; i++) {
 				h = config[i].getHeight();
 				w = config[i].getWidth();
@@ -160,27 +158,30 @@ class TournamentMatch implements Callable<TournamentGroup> {
 
 				LogUtils.logAIs(LOG, Level.INFO, String.format("Player 1: %s, Player 2: %s", p1.getName(), p2.getName()), null, p1.getName(), p2.getName());
 
-//				gameExecutors.submit(task) //TODO use executors
-				ConnectK game = new ConnectK(model, player1, player2); // New
-																		// NoGui
+				ConnectK game = new ConnectK(model, player1, player2); 
 				byte winner = game.play();
 
 				// Assign scores based on winner
 				if (winner == 1){
-					p1score++;
+					p1.score++;
 					LOG.info("Game Ended [{}]. Winner: " + p1.getName(), playersPlaying);
 					LogUtils.logAIs(LOG, Level.INFO, String.format("Game Ended. Winner: %s.",	p1.getName()), null, p1.getName(), p2.getName());
 				}
 				else if (winner == 2){
-					p2score++;
+					p2.score++;
 					LOG.info("Game Ended [{}]. Winner: " + p2.getName(), playersPlaying);
 					LogUtils.logAIs(LOG, Level.INFO, String.format("Game Ended. Winner: %s.",	p2.getName()), null, p1.getName(), p2.getName());
 				}else{
 					LOG.info("Game Ended [{}]. Draw!", playersPlaying);
 					LogUtils.logAIs(LOG, Level.INFO, "Game Ended. DRAW!", null, p1.getName(), p2.getName());
 				}
-				LOG.info("Round: {} | Score P1: {}, P2: {}", round, p1score, p2score);
-				LogUtils.logAIs(LOG, Level.INFO, String.format("Round: %s | Score P1: %s, P2: %s", round, p1score, p2score), null, p1.getName(), p2.getName());
+				LOG.info("Round: {} | Score P1: {}, P2: {}", round, p1.score, p2.score);
+				LogUtils.logAIs(LOG, Level.INFO, String.format("Round: %s | Score P1: %s, P2: %s", round, p1.score, p2.score), null, p1.getName(), p2.getName());
+				
+				// Swap Players
+//				TournamentPlayer temp = p1;
+//				p1 = p2;
+//				p2 = temp;
 				
 				// TODO: this can be more efficient. What about ending the match
 				// if there is a significant lead. I.e 2/3
@@ -189,16 +190,16 @@ class TournamentMatch implements Callable<TournamentGroup> {
 			// After the game return the winner of 3 rounds. If draw, #TODO
 			// random
 			// game?
-			if (p1score > p2score)
-				return 1;
-			else if (p2score > p1score)
-				return 2;
+			int winner = 0;
+			if (p1.score > p2.score)
+				winner = 1;
+			else if (p2.score > p1.score)
+				winner = 2;
 			else {
-//				if (config > 2)
-					return new Random().nextInt((2 - 1) + 1) + 1;
-//				else
-//					return start(round++);
+				winner =  new Random().nextInt((2 - 1) + 1) + 1;
 			}
+			
+			return winner;
 		}
 
 	}

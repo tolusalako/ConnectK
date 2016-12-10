@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,11 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
+
 public class ConnectKGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +53,9 @@ public class ConnectKGUI extends JFrame {
 
 	public ConnectKGUI(BoardModel model) {
 		super("ConnectK");
-		setIconImage(new ImageIcon(getClass().getResource("/icon.png")).getImage());
+		URL iconUrl = getClass().getResource("/icon.png");
+		if (null != iconUrl && !iconUrl.toString().isEmpty())
+			setIconImage(new ImageIcon(iconUrl).getImage());
 		setLayout(new BorderLayout());
 
 		// make a status bar
