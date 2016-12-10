@@ -67,8 +67,8 @@ public class TournamentMain {
 			if (playerList.isEmpty())
 				exit(0);
 			
-			vsPoorAI(playerList);
-			exit(0);
+//			vsPoorAI(playerList);
+//			exit(0);
 
 			// testPlayers(playerList);
 

@@ -128,12 +128,10 @@ class TournamentMatch implements Callable<TournamentGroup> {
 		TournamentPlayer p1;
 		TournamentPlayer p2;
 		final String playersPlaying;
-//		CKPlayerFactory originalp1;
 
 		public TournamentGame(TournamentPlayer p1, TournamentPlayer p2) {
 			this.p1 = p1;
 			this.p2 = p2;
-//			originalp1 = p1.getPlayerFactory();
 			playersPlaying = String.format("Group: [%s vs %s] Players: [%s vs %s];", p1.getGroupId(), p2.getGroupId(), p1.getName(), p2.getName());
 		}
 		
@@ -158,9 +156,23 @@ class TournamentMatch implements Callable<TournamentGroup> {
 
 				LogUtils.logAIs(LOG, Level.INFO, String.format("Player 1: %s, Player 2: %s", p1.getName(), p2.getName()), null, p1.getName(), p2.getName());
 
-				ConnectK game = new ConnectK(model, player1, player2); 
-				byte winner = game.play();
-
+				byte winner1 = new ConnectK(model, player1, player2).play();
+				byte winner2 = new ConnectK(model, player2, player1).play();
+				if (winner2 == 1)
+					winner2 = 2;
+				else if (winner2 == 2)
+					winner2 = 1;
+				byte winner = 0;
+				
+				if (winner1 == 0 || winner2 == 0) // At least one draw
+					winner = (winner1==0) ? winner2 : winner1;
+				else{
+					if (winner1 == winner2) // Same AI won twice
+						winner = winner1;
+					else
+						winner = 0; //Draw
+				}
+				
 				// Assign scores based on winner
 				if (winner == 1){
 					p1.score++;
@@ -178,10 +190,6 @@ class TournamentMatch implements Callable<TournamentGroup> {
 				LOG.info("Round: {} | Score P1: {}, P2: {}", round, p1.score, p2.score);
 				LogUtils.logAIs(LOG, Level.INFO, String.format("Round: %s | Score P1: %s, P2: %s", round, p1.score, p2.score), null, p1.getName(), p2.getName());
 				
-				// Swap Players
-//				TournamentPlayer temp = p1;
-//				p1 = p2;
-//				p2 = temp;
 				
 				// TODO: this can be more efficient. What about ending the match
 				// if there is a significant lead. I.e 2/3
